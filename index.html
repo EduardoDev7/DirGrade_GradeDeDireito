@@ -28,7 +28,7 @@
             color: var(--text-color-primary);
             margin: 0;
             padding: 20px;
-            overflow-x: hidden;
+            /* overflow-x: hidden; FOI REMOVIDO DAQUI PARA CONSERTAR O CORTE */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -53,7 +53,7 @@
 
         .header img {
             height: 45px;
-            
+            filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(180deg) saturate(300%) contrast(100%);
         }
 
         .header h1 {
@@ -219,7 +219,7 @@
         .footer span { color: #e74c3c; }
 
         /* ================================== */
-        /* LAYOUT RESPONSIVO         */
+        /* LAYOUT RESPONSIVO                 */
         /* ================================== */
         @media (max-width: 800px) {
             body { padding: 10px; }
@@ -257,7 +257,7 @@
 
     <div class="container">
         <div class="header">
-            <img src=" -2.jpg alt="Balança da Justiça">
+            <img src="https://i.ibb.co/6y4tW6s/scales-of-justice-logo.png" alt="Balança da Justiça">
             <h1>DirGrade</h1>
         </div>
         <div class="progresso-container">
