@@ -9,20 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f0f2f5; /* Fundo cinza claro */
-            --surface-color: #ffffff; /* Card e elementos brancos */
-            --text-color-primary: #2c3e50; /* Texto escuro principal */
-            --text-color-secondary: #7f8c8d; /* Texto secundário */
-            --header-color: #2980b9; /* Azul para o título */
-            
-            --completed-bg: #2ecc71; /* Verde esmeralda */
-            --available-bg: #3498db; /* Azul primário */
-            --blocked-bg: #e74c3c;   /* Vermelho tijolo */
-
-            --completed-text: #ffffff;
-            --available-text: #ffffff;
-            --blocked-text: #ffffff;
-            
+            --bg-color: #f0f2f5;
+            --surface-color: #ffffff;
+            --text-color-primary: #2c3e50;
+            --text-color-secondary: #7f8c8d;
+            --header-color: #2980b9;
+            --completed-bg: #2ecc71;
+            --available-bg: #3498db;
+            --blocked-bg: #e74c3c;
+            --text-on-color: #ffffff;
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             --border-radius: 10px;
         }
@@ -33,24 +28,24 @@
             color: var(--text-color-primary);
             margin: 0;
             padding: 20px;
-            overflow-x: hidden; /* Para evitar barra de rolagem extra no corpo */
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Garante que o rodapé fique na parte inferior */
+            min-height: 100vh;
         }
 
         .container {
             max-width: 1200px;
             margin: auto;
             padding: 0 15px;
-            flex-grow: 1; /* Permite que o container principal ocupe o espaço disponível */
+            width: 100%;
+            flex-grow: 1;
         }
         
-        /* Header centralizado */
         .header {
             display: flex;
             align-items: center;
-            justify-content: center; /* Centralizado */
+            justify-content: center;
             gap: 15px;
             margin-bottom: 30px;
             padding: 10px 0;
@@ -58,18 +53,16 @@
 
         .header img {
             height: 45px;
-            /* Filtro para deixar o logo azul ou neutro no fundo claro */
-            
+            filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(180deg) saturate(300%) contrast(100%);
         }
 
         .header h1 {
-            font-size: 3em;
+            font-size: 2.2em;
             font-weight: 700;
-            color: black;
+            color: var(--header-color);
             margin: 0;
         }
 
-        /* Barra de Progresso */
         .progresso-container {
             margin: 25px auto;
             max-width: 800px;
@@ -96,18 +89,18 @@
         #barra-progresso-interna {
             height: 100%;
             width: 0%;
-            background: linear-gradient(to right, #28a745, #1abc9c); /* Gradiente de verde para ciano */
+            background: linear-gradient(to right, #28a745, #1abc9c);
             border-radius: 6px;
             transition: width 0.6s ease-in-out;
         }
         
-        /* Layout Principal em Colunas */
+        /* Layout Desktop */
         .grade-container {
             display: flex;
             gap: 20px;
             width: 100%;
             overflow-x: auto;
-            padding: 10px 0 20px 0;
+            padding: 10px 5px 20px 5px; /* Adicionado padding para a sombra não cortar */
         }
         .grade-container::-webkit-scrollbar { height: 8px; }
         .grade-container::-webkit-scrollbar-track { background: #e0e6ed; border-radius: 4px; }
@@ -115,7 +108,7 @@
         .grade-container::-webkit-scrollbar-thumb:hover { background-color: #8fa1b8; }
         
         .periodo-coluna {
-            flex: 0 0 220px; /* Largura um pouco maior para os cards */
+            flex: 0 0 220px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -135,6 +128,12 @@
             border-bottom: 1px solid #e0e6ed;
         }
 
+        .disciplinas-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         /* Cards de Disciplina */
         .disciplina {
             padding: 15px;
@@ -146,8 +145,8 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 120px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
-            border: 1px solid rgba(0, 0, 0, 0.05); /* Borda sutil */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         .disciplina:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
         .disciplina.bloqueada { cursor: not-allowed; }
@@ -156,18 +155,17 @@
         .disciplina .codigo { font-weight: 600; font-size: 0.85em; margin-bottom: 5px; opacity: 0.9; }
         .disciplina .nome { font-size: 0.95em; font-weight: 500; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin: 8px 0; line-height: 1.3; }
         .disciplina .horas { font-size: 0.8em; padding: 5px 12px; border-radius: 15px; align-self: center; margin-top: 10px; font-weight: 600; }
-
-        /* Estados das Disciplinas - Cores de Fundo Completas */
-        .disciplina.concluida { background-color: var(--completed-bg); color: var(--completed-text); }
-        .disciplina.concluida .codigo, .disciplina.concluida .nome, .disciplina.concluida .horas { color: var(--completed-text); }
+        
+        .disciplina.concluida { background-color: var(--completed-bg); color: var(--text-on-color); }
+        .disciplina.concluida .codigo, .disciplina.concluida .nome, .disciplina.concluida .horas { color: var(--text-on-color); }
         .disciplina.concluida .horas { background-color: rgba(0, 0, 0, 0.2); }
 
-        .disciplina.disponivel { background-color: var(--available-bg); color: var(--available-text); }
-        .disciplina.disponivel .codigo, .disciplina.disponivel .nome, .disciplina.disponivel .horas { color: var(--available-text); }
+        .disciplina.disponivel { background-color: var(--available-bg); color: var(--text-on-color); }
+        .disciplina.disponivel .codigo, .disciplina.disponivel .nome, .disciplina.disponivel .horas { color: var(--text-on-color); }
         .disciplina.disponivel .horas { background-color: rgba(0, 0, 0, 0.2); }
 
-        .disciplina.bloqueada { background-color: var(--blocked-bg); color: var(--blocked-text); }
-        .disciplina.bloqueada .codigo, .disciplina.bloqueada .nome, .disciplina.bloqueada .horas { color: var(--blocked-text); }
+        .disciplina.bloqueada { background-color: var(--blocked-bg); color: var(--text-on-color); }
+        .disciplina.bloqueada .codigo, .disciplina.bloqueada .nome, .disciplina.bloqueada .horas { color: var(--text-on-color); }
         .disciplina.bloqueada .horas { background-color: rgba(0, 0, 0, 0.2); }
 
         /* Modal */
@@ -175,7 +173,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(44, 62, 80, 0.7); /* Azul escuro semi-transparente */
+            background: rgba(44, 62, 80, 0.7);
             backdrop-filter: blur(4px);
             display: none;
             align-items: center;
@@ -193,69 +191,73 @@
             border-top: 5px solid var(--header-color);
             animation: fadeIn 0.3s ease-out;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         .modal-close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            background: none;
-            border: none;
-            font-size: 2.2em;
-            color: var(--text-color-secondary);
-            cursor: pointer;
-            line-height: 1;
-            transition: color 0.2s;
+            position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2.2em;
+            color: var(--text-color-secondary); cursor: pointer; line-height: 1; transition: color 0.2s;
         }
         .modal-close-btn:hover { color: var(--header-color); }
-
         .modal-content h3 {
-            color: var(--header-color);
-            margin: 0 0 20px 0;
-            font-size: 1.5em;
-            font-weight: 700;
-            text-align: center;
+            color: var(--header-color); margin: 0 0 20px 0; font-size: 1.5em; font-weight: 700; text-align: center;
         }
-        #lista-impedimentos {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+        #lista-impedimentos { list-style: none; padding: 0; margin: 0; }
         #lista-impedimentos li {
-            background-color: var(--bg-color);
-            padding: 12px 15px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            color: var(--text-color-primary);
-            font-weight: 500;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: var(--bg-color); padding: 12px 15px; border-radius: 6px; margin-bottom: 10px;
+            color: var(--text-color-primary); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         #lista-impedimentos li:last-child { margin-bottom: 0; }
 
         /* Footer */
         .footer {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: var(--surface-color);
-            text-align: center;
-            color: var(--text-color-secondary);
-            font-size: 0.9em;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            margin-top: 40px; padding: 20px; background-color: var(--surface-color); text-align: center;
+            color: var(--text-color-secondary); font-size: 0.9em; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             border-top: 1px solid #e0e6ed;
         }
-        .footer span {
-            color: #e74c3c; /* Coração vermelho */
+        .footer span { color: #e74c3c; }
+
+        /* ================================== */
+        /* LAYOUT RESPONSIVO         */
+        /* ================================== */
+        @media (max-width: 800px) {
+            body { padding: 10px; }
+
+            .header h1 { font-size: 1.8em; }
+            .header img { height: 35px; }
+            
+            #progresso-texto { font-size: 1em; }
+            .progresso-container { padding: 15px; }
+            
+            .grade-container {
+                flex-direction: column; /* Empilha os períodos */
+                overflow-x: hidden;
+                gap: 25px;
+            }
+            .periodo-coluna { flex: 1 1 auto; /* Permite que a coluna cresça */ }
+            
+            /* Grid de 2 colunas para as disciplinas dentro de cada período */
+            .disciplinas-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .disciplina {
+                min-height: 140px;
+                padding: 10px;
+            }
+            .disciplina .nome { font-size: 0.85em; }
         }
+
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
-            <img src="./ -2.jpg" alt="Balança da Justiça">
+            <img src="https://i.ibb.co/6y4tW6s/scales-of-justice-logo.png" alt="Balança da Justiça">
             <h1>DirGrade</h1>
         </div>
         <div class="progresso-container">
@@ -264,107 +266,128 @@
                 <div id="barra-progresso-interna"></div>
             </div>
         </div>
-    </div>
-
-    <div class="grade-container">
-        <div class="periodo-coluna">
-            <h2>1º Período</h2>
-            <div class="disciplina" data-codigo="CSO113" data-requisitos='[]' data-horas="30"><span class="codigo">CSO113</span><p class="nome">Introdução à Sociologia</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR101" data-requisitos='[]' data-horas="60"><span class="codigo">DIR101</span><p class="nome">Introdução ao Estudo do Direito I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR103" data-requisitos='[]' data-horas="60"><span class="codigo">DIR103</span><p class="nome">Ciência Política</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR111" data-requisitos='[]' data-horas="60"><span class="codigo">DIR111</span><p class="nome">Direito Civil - Parte Geral I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR135" data-requisitos='[]' data-horas="30"><span class="codigo">DIR135</span><p class="nome">História no Direito</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="FIL110" data-requisitos='[]' data-horas="60"><span class="codigo">FIL110</span><p class="nome">Filosofia Geral</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="PRO120" data-requisitos='[]' data-horas="30"><span class="codigo">PRO120</span><p class="nome">Economia</p><span class="horas">30h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>2º Período</h2>
-            <div class="disciplina" data-codigo="DIR012" data-requisitos='["DIR101", "DIR111"]' data-horas="60"><span class="codigo">DIR012</span><p class="nome">Direito Civil - Parte Geral II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR102" data-requisitos='["DIR101"]' data-horas="60"><span class="codigo">DIR102</span><p class="nome">Introdução ao Estudo do Direito II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR104" data-requisitos='["FIL110"]' data-horas="30"><span class="codigo">DIR104</span><p class="nome">Filosofia do Direito</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR105" data-requisitos='["CSO113"]' data-horas="30"><span class="codigo">DIR105</span><p class="nome">Sociologia Jurídica</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR121" data-requisitos='["DIR101", "DIR103"]' data-horas="60"><span class="codigo">DIR121</span><p class="nome">Teoria da Constituição</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR123" data-requisitos='[]' data-horas="30"><span class="codigo">DIR123</span><p class="nome">Direitos Humanos</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR124" data-requisitos='[]' data-horas="30"><span class="codigo">DIR124</span><p class="nome">Metodologia da Pesquisa</p><span class="horas">30h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>3º Período</h2>
-            <div class="disciplina" data-codigo="DIR004" data-requisitos='["DIR102"]' data-horas="60"><span class="codigo">DIR004</span><p class="nome">Teoria Geral do Processo</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR005" data-requisitos='["DIR102"]' data-horas="30"><span class="codigo">DIR005</span><p class="nome">Ética Profissional e OAB</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR006" data-requisitos='["DIR012"]' data-horas="30"><span class="codigo">DIR006</span><p class="nome">Direito do Consumidor</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR031" data-requisitos='["DIR102"]' data-horas="60"><span class="codigo">DIR031</span><p class="nome">Direito Penal I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR106" data-requisitos='[]' data-horas="30"><span class="codigo">DIR106</span><p class="nome">Mediação e Formas Consensuais</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR113" data-requisitos='["DIR012"]' data-horas="60"><span class="codigo">DIR113</span><p class="nome">Direito Civil - Obrigações I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR122" data-requisitos='["DIR121"]' data-horas="60"><span class="codigo">DIR122</span><p class="nome">Direito Constitucional I</p><span class="horas">60h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>4º Período</h2>
-            <div class="disciplina" data-codigo="DIR014" data-requisitos='["DIR113"]' data-horas="60"><span class="codigo">DIR014</span><p class="nome">Direito Civil - Obrigações II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR023" data-requisitos='["DIR122"]' data-horas="60"><span class="codigo">DIR023</span><p class="nome">Direito Constitucional II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR032" data-requisitos='["DIR031"]' data-horas="60"><span class="codigo">DIR032</span><p class="nome">Direito Penal II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR107" data-requisitos='["DIR012"]' data-horas="60"><span class="codigo">DIR107</span><p class="nome">Direito Empresarial I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR256" data-requisitos='["DIR004"]' data-horas="60"><span class="codigo">DIR256</span><p class="nome">Processual Civil I</p><span class="horas">60h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>5º Período</h2>
-            <div class="disciplina" data-codigo="DIR033" data-requisitos='["DIR032"]' data-horas="60"><span class="codigo">DIR033</span><p class="nome">Direito Penal III</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR108" data-requisitos='["DIR107"]' data-horas="60"><span class="codigo">DIR108</span><p class="nome">Direito Empresarial II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR115" data-requisitos='["DIR113"]' data-horas="60"><span class="codigo">DIR115</span><p class="nome">Direito Civil - Contratos I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR127" data-requisitos='["DIR023"]' data-horas="60"><span class="codigo">DIR127</span><p class="nome">Direito Administrativo I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR257" data-requisitos='["DIR256"]' data-horas="60"><span class="codigo">DIR257</span><p class="nome">Processual Civil II</p><span class="horas">60h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>6º Período</h2>
-            <div class="disciplina" data-codigo="DIR034" data-requisitos='["DIR033"]' data-horas="60"><span class="codigo">DIR034</span><p class="nome">Direito Penal IV</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR116" data-requisitos='["DIR108"]' data-horas="60"><span class="codigo">DIR116</span><p class="nome">Direito Empresarial III</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR117" data-requisitos='["DIR115"]' data-horas="60"><span class="codigo">DIR117</span><p class="nome">Direito Civil - Posse e Propriedade</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR118" data-requisitos='["DIR115"]' data-horas="30"><span class="codigo">DIR118</span><p class="nome">Direito Civil - Contratos II</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR128" data-requisitos='["DIR127"]' data-horas="60"><span class="codigo">DIR128</span><p class="nome">Direito Administrativo II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR258" data-requisitos='["DIR257"]' data-horas="60"><span class="codigo">DIR258</span><p class="nome">Processual Civil III</p><span class="horas">60h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>7º Período</h2>
-            <div class="disciplina" data-codigo="DIR119" data-requisitos='["DIR117"]' data-horas="30"><span class="codigo">DIR119</span><p class="nome">Direitos Reais Limitados</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR129" data-requisitos='["DIR128"]' data-horas="60"><span class="codigo">DIR129</span><p class="nome">Direito Administrativo III</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR130" data-requisitos='["DIR116"]' data-horas="60"><span class="codigo">DIR130</span><p class="nome">Empresarial IV - Falência</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR136" data-requisitos='["DIR012", "DIR116", "DIR256"]' data-horas="30"><span class="codigo">DIR136</span><p class="nome">Prática Simulada I - Civil</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR165" data-requisitos='["DIR004", "DIR032"]' data-horas="60"><span class="codigo">DIR165</span><p class="nome">Processual Penal I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR174" data-requisitos='["DIR115", "DIR122"]' data-horas="60"><span class="codigo">DIR174</span><p class="nome">Direito do Trabalho I</p><span class="horas">60h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>8º Período</h2>
-            <div class="disciplina" data-codigo="DIR137" data-requisitos='["DIR117"]' data-horas="60"><span class="codigo">DIR137</span><p class="nome">Direito Civil - Famílias</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR140" data-requisitos='["DIR136"]' data-horas="30"><span class="codigo">DIR140</span><p class="nome">Estágio Interno (NPJ) I</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR166" data-requisitos='["DIR165"]' data-horas="60"><span class="codigo">DIR166</span><p class="nome">Processual Penal II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR175" data-requisitos='["DIR174"]' data-horas="60"><span class="codigo">DIR175</span><p class="nome">Direito do Trabalho II</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR538" data-requisitos='["DIR023", "DIR115"]' data-horas="60"><span class="codigo">DIR538</span><p class="nome">Direito Internacional Público</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR109" data-requisitos='["DIR032", "DIR108", "DIR115", "DIR124", "DIR128", "DIR257"]' data-horas="30"><span class="codigo">DIR109</span><p class="nome">Projeto de TCC</p><span class="horas">30h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>9º Período</h2>
-            <div class="disciplina" data-codigo="DIR020" data-requisitos='["DIR129"]' data-horas="60"><span class="codigo">DIR020</span><p class="nome">Direito Tributário I</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR141" data-requisitos='["DIR137", "DIR257"]' data-horas="60"><span class="codigo">DIR141</span><p class="nome">Direito Civil - Sucessões</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR142" data-requisitos='["DIR128"]' data-horas="30"><span class="codigo">DIR142</span><p class="nome">Direito Ambiental</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR143" data-requisitos='["DIR128"]' data-horas="30"><span class="codigo">DIR143</span><p class="nome">Direito do Patrimônio Cultural</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR144" data-requisitos='["DIR140"]' data-horas="30"><span class="codigo">DIR144</span><p class="nome">Estágio Interno (NPJ) II</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR153" data-requisitos='["DIR175"]' data-horas="60"><span class="codigo">DIR153</span><p class="nome">Processual do Trabalho</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR167" data-requisitos='["DIR166"]' data-horas="60"><span class="codigo">DIR167</span><p class="nome">Processual Penal III</p><span class="horas">60h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>10º Período</h2>
-            <div class="disciplina" data-codigo="DIR139" data-requisitos='["DIR020"]' data-horas="30"><span class="codigo">DIR139</span><p class="nome">Direito Tributário II</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR145" data-requisitos='["DIR118"]' data-horas="30"><span class="codigo">DIR145</span><p class="nome">Direito Digital</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR154" data-requisitos='["DIR023", "DIR141", "DIR175"]' data-horas="60"><span class="codigo">DIR154</span><p class="nome">Direito Previdenciário</p><span class="horas">60h</span></div>
-            <div class="disciplina" data-codigo="DIR172" data-requisitos='["DIR023", "DIR115"]' data-horas="30"><span class="codigo">DIR172</span><p class="nome">Direito Internacional Privado</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="DIR185" data-requisitos='["DIR109"]' data-horas="30"><span class="codigo">DIR185</span><p class="nome">Defesa de TCC</p><span class="horas">30h</span></div>
-        </div>
-        <div class="periodo-coluna">
-            <h2>Eletivas e Optativas</h2>
-            <div class="disciplina" data-codigo="ELETIVA01" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 1</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="ELETIVA02" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 2</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="ELETIVA03" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 3</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="ELETIVA04" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 4</p><span class="horas">30h</span></div>
-            <div class="disciplina" data-codigo="OPTATIVA01" data-requisitos='[]' data-horas="30"><span class="codigo">OPTATIVA</span><p class="nome">Optativa 1</p><span class="horas">30h</span></div>
+        <div class="grade-container">
+            <div class="periodo-coluna">
+                <h2>1º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="CSO113" data-requisitos='[]' data-horas="30"><span class="codigo">CSO113</span><p class="nome">Introdução à Sociologia</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR101" data-requisitos='[]' data-horas="60"><span class="codigo">DIR101</span><p class="nome">Introdução ao Estudo do Direito I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR103" data-requisitos='[]' data-horas="60"><span class="codigo">DIR103</span><p class="nome">Ciência Política</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR111" data-requisitos='[]' data-horas="60"><span class="codigo">DIR111</span><p class="nome">Direito Civil - Parte Geral I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR135" data-requisitos='[]' data-horas="30"><span class="codigo">DIR135</span><p class="nome">História no Direito</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="FIL110" data-requisitos='[]' data-horas="60"><span class="codigo">FIL110</span><p class="nome">Filosofia Geral</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="PRO120" data-requisitos='[]' data-horas="30"><span class="codigo">PRO120</span><p class="nome">Economia</p><span class="horas">30h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>2º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR012" data-requisitos='["DIR101", "DIR111"]' data-horas="60"><span class="codigo">DIR012</span><p class="nome">Direito Civil - Parte Geral II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR102" data-requisitos='["DIR101"]' data-horas="60"><span class="codigo">DIR102</span><p class="nome">Introdução ao Estudo do Direito II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR104" data-requisitos='["FIL110"]' data-horas="30"><span class="codigo">DIR104</span><p class="nome">Filosofia do Direito</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR105" data-requisitos='["CSO113"]' data-horas="30"><span class="codigo">DIR105</span><p class="nome">Sociologia Jurídica</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR121" data-requisitos='["DIR101", "DIR103"]' data-horas="60"><span class="codigo">DIR121</span><p class="nome">Teoria da Constituição</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR123" data-requisitos='[]' data-horas="30"><span class="codigo">DIR123</span><p class="nome">Direitos Humanos</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR124" data-requisitos='[]' data-horas="30"><span class="codigo">DIR124</span><p class="nome">Metodologia da Pesquisa</p><span class="horas">30h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>3º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR004" data-requisitos='["DIR102"]' data-horas="60"><span class="codigo">DIR004</span><p class="nome">Teoria Geral do Processo</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR005" data-requisitos='["DIR102"]' data-horas="30"><span class="codigo">DIR005</span><p class="nome">Ética Profissional e OAB</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR006" data-requisitos='["DIR012"]' data-horas="30"><span class="codigo">DIR006</span><p class="nome">Direito do Consumidor</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR031" data-requisitos='["DIR102"]' data-horas="60"><span class="codigo">DIR031</span><p class="nome">Direito Penal I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR106" data-requisitos='[]' data-horas="30"><span class="codigo">DIR106</span><p class="nome">Mediação e Formas Consensuais</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR113" data-requisitos='["DIR012"]' data-horas="60"><span class="codigo">DIR113</span><p class="nome">Direito Civil - Obrigações I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR122" data-requisitos='["DIR121"]' data-horas="60"><span class="codigo">DIR122</span><p class="nome">Direito Constitucional I</p><span class="horas">60h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>4º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR014" data-requisitos='["DIR113"]' data-horas="60"><span class="codigo">DIR014</span><p class="nome">Direito Civil - Obrigações II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR023" data-requisitos='["DIR122"]' data-horas="60"><span class="codigo">DIR023</span><p class="nome">Direito Constitucional II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR032" data-requisitos='["DIR031"]' data-horas="60"><span class="codigo">DIR032</span><p class="nome">Direito Penal II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR107" data-requisitos='["DIR012"]' data-horas="60"><span class="codigo">DIR107</span><p class="nome">Direito Empresarial I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR256" data-requisitos='["DIR004"]' data-horas="60"><span class="codigo">DIR256</span><p class="nome">Processual Civil I</p><span class="horas">60h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>5º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR033" data-requisitos='["DIR032"]' data-horas="60"><span class="codigo">DIR033</span><p class="nome">Direito Penal III</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR108" data-requisitos='["DIR107"]' data-horas="60"><span class="codigo">DIR108</span><p class="nome">Direito Empresarial II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR115" data-requisitos='["DIR113"]' data-horas="60"><span class="codigo">DIR115</span><p class="nome">Direito Civil - Contratos I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR127" data-requisitos='["DIR023"]' data-horas="60"><span class="codigo">DIR127</span><p class="nome">Direito Administrativo I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR257" data-requisitos='["DIR256"]' data-horas="60"><span class="codigo">DIR257</span><p class="nome">Processual Civil II</p><span class="horas">60h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>6º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR034" data-requisitos='["DIR033"]' data-horas="60"><span class="codigo">DIR034</span><p class="nome">Direito Penal IV</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR116" data-requisitos='["DIR108"]' data-horas="60"><span class="codigo">DIR116</span><p class="nome">Direito Empresarial III</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR117" data-requisitos='["DIR115"]' data-horas="60"><span class="codigo">DIR117</span><p class="nome">Direito Civil - Posse e Propriedade</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR118" data-requisitos='["DIR115"]' data-horas="30"><span class="codigo">DIR118</span><p class="nome">Direito Civil - Contratos II</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR128" data-requisitos='["DIR127"]' data-horas="60"><span class="codigo">DIR128</span><p class="nome">Direito Administrativo II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR258" data-requisitos='["DIR257"]' data-horas="60"><span class="codigo">DIR258</span><p class="nome">Processual Civil III</p><span class="horas">60h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>7º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR119" data-requisitos='["DIR117"]' data-horas="30"><span class="codigo">DIR119</span><p class="nome">Direitos Reais Limitados</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR129" data-requisitos='["DIR128"]' data-horas="60"><span class="codigo">DIR129</span><p class="nome">Direito Administrativo III</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR130" data-requisitos='["DIR116"]' data-horas="60"><span class="codigo">DIR130</span><p class="nome">Empresarial IV - Falência</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR136" data-requisitos='["DIR012", "DIR116", "DIR256"]' data-horas="30"><span class="codigo">DIR136</span><p class="nome">Prática Simulada I - Civil</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR165" data-requisitos='["DIR004", "DIR032"]' data-horas="60"><span class="codigo">DIR165</span><p class="nome">Processual Penal I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR174" data-requisitos='["DIR115", "DIR122"]' data-horas="60"><span class="codigo">DIR174</span><p class="nome">Direito do Trabalho I</p><span class="horas">60h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>8º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR137" data-requisitos='["DIR117"]' data-horas="60"><span class="codigo">DIR137</span><p class="nome">Direito Civil - Famílias</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR140" data-requisitos='["DIR136"]' data-horas="30"><span class="codigo">DIR140</span><p class="nome">Estágio Interno (NPJ) I</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR166" data-requisitos='["DIR165"]' data-horas="60"><span class="codigo">DIR166</span><p class="nome">Processual Penal II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR175" data-requisitos='["DIR174"]' data-horas="60"><span class="codigo">DIR175</span><p class="nome">Direito do Trabalho II</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR538" data-requisitos='["DIR023", "DIR115"]' data-horas="60"><span class="codigo">DIR538</span><p class="nome">Direito Internacional Público</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR109" data-requisitos='["DIR032", "DIR108", "DIR115", "DIR124", "DIR128", "DIR257"]' data-horas="30"><span class="codigo">DIR109</span><p class="nome">Projeto de TCC</p><span class="horas">30h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>9º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR020" data-requisitos='["DIR129"]' data-horas="60"><span class="codigo">DIR020</span><p class="nome">Direito Tributário I</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR141" data-requisitos='["DIR137", "DIR257"]' data-horas="60"><span class="codigo">DIR141</span><p class="nome">Direito Civil - Sucessões</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR142" data-requisitos='["DIR128"]' data-horas="30"><span class="codigo">DIR142</span><p class="nome">Direito Ambiental</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR143" data-requisitos='["DIR128"]' data-horas="30"><span class="codigo">DIR143</span><p class="nome">Direito do Patrimônio Cultural</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR144" data-requisitos='["DIR140"]' data-horas="30"><span class="codigo">DIR144</span><p class="nome">Estágio Interno (NPJ) II</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR153" data-requisitos='["DIR175"]' data-horas="60"><span class="codigo">DIR153</span><p class="nome">Processual do Trabalho</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR167" data-requisitos='["DIR166"]' data-horas="60"><span class="codigo">DIR167</span><p class="nome">Processual Penal III</p><span class="horas">60h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>10º Período</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="DIR139" data-requisitos='["DIR020"]' data-horas="30"><span class="codigo">DIR139</span><p class="nome">Direito Tributário II</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR145" data-requisitos='["DIR118"]' data-horas="30"><span class="codigo">DIR145</span><p class="nome">Direito Digital</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR154" data-requisitos='["DIR023", "DIR141", "DIR175"]' data-horas="60"><span class="codigo">DIR154</span><p class="nome">Direito Previdenciário</p><span class="horas">60h</span></div>
+                    <div class="disciplina" data-codigo="DIR172" data-requisitos='["DIR023", "DIR115"]' data-horas="30"><span class="codigo">DIR172</span><p class="nome">Direito Internacional Privado</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="DIR185" data-requisitos='["DIR109"]' data-horas="30"><span class="codigo">DIR185</span><p class="nome">Defesa de TCC</p><span class="horas">30h</span></div>
+                </div>
+            </div>
+            <div class="periodo-coluna">
+                <h2>Eletivas e Optativas</h2>
+                <div class="disciplinas-grid">
+                    <div class="disciplina" data-codigo="ELETIVA01" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 1</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="ELETIVA02" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 2</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="ELETIVA03" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 3</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="ELETIVA04" data-requisitos='[]' data-horas="30"><span class="codigo">ELETIVA</span><p class="nome">Eletiva 4</p><span class="horas">30h</span></div>
+                    <div class="disciplina" data-codigo="OPTATIVA01" data-requisitos='[]' data-horas="30"><span class="codigo">OPTATIVA</span><p class="nome">Optativa 1</p><span class="horas">30h</span></div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -377,7 +400,7 @@
     </div>
 
     <footer class="footer">
-        Desenvolvido por Eduardo Marques com <span>❤️</span> para Amanda e para todos os alunos de Direito da Ufop (Espero que ajude)!
+        Desenvolvido com <span>❤️</span> para a Graduação de Direito - Raul Soares, MG, Brasil.
     </footer>
 
     <script>
@@ -478,7 +501,6 @@
                 if (disciplinaInfo.status === 'disponivel') {
                     disciplinaInfo.status = 'concluida';
                 } else if (disciplinaInfo.status === 'concluida') {
-                    // Antes de desmarcar uma disciplina concluída, verificar se ela é pré-requisito de outras já concluídas
                     let podeDesmarcar = true;
                     disciplinasMap.forEach(info => {
                         if (info.status === 'concluida' && info.requisitos.includes(codigo)) {
