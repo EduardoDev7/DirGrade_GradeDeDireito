@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montar Grade - DirGrade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --surface-color: #ffffff;
+            --text-color-primary: #2c3e50;
+            --header-color: #2980b9;
+            --completed-bg: #2ecc71;
+            --available-bg: #3498db;
+            --blocked-bg: #e74c3c;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --border-radius: 10px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color-primary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1600px;
+            margin: auto;
+        }
+
+        #disciplinas-disponiveis {
+            flex: 0 0 320px;
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            height: 85vh;
+            overflow-y: auto;
+        }
+        #disciplinas-disponiveis h2 {
+            text-align: center;
+            color: var(--header-color);
+            margin-top: 0;
+        }
+        .disciplina-box {
+            padding: 12px;
+            background-color: var(--available-bg);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: grab;
+            font-size: 0.9em;
+            transition: background-color 0.3s, opacity 0.3s;
+            border-left: 5px solid #2980b9;
+        }
+        .disciplina-box strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 1em;
+        }
+         .disciplina-box small {
+            font-style: italic;
+            opacity: 0.9;
+        }
+        .disciplina-box:active { cursor: grabbing; }
+        .disciplina-box.arrastando { opacity: 0.5; }
+        .disciplina-box.alocada {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            border-left-color: #7f8c8d;
+            opacity: 0.7;
+        }
+        .disciplina-box.status-concluida {
+            background-color: var(--completed-bg);
+            border-left-color: #27ae60;
+        }
+        .disciplina-box.status-disponivel {
+            background-color: var(--available-bg);
+            border-left-color: #2980b9;
+        }
+        .disciplina-box.status-bloqueada {
+            background-color: var(--blocked-bg);
+            border-left-color: #c0392b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        #grade-horaria-container {
+            flex-grow: 1;
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .grade-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .grade-header h2 {
+            text-align: center;
+            color: var(--header-color);
+            margin: 0;
+        }
+        #horario-semanal {
+            display: grid;
+            grid-template-columns: 100px repeat(6, 1fr); /* Aumentado para 6 colunas para incluir Sábado */
+            gap: 5px;
+        }
+        .horario-header, .horario-header-hora {
+            background-color: #eef1f5;
+            padding: 10px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 6px;
+        }
+        .horario-celula {
+            border: 2px dashed #e0e6ed;
+            border-radius: 6px;
+            min-height: 100px;
+            padding: 5px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .horario-celula .disciplina-box {
+            cursor: pointer;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        .horario-celula.drag-over {
+            background-color: #d1e7dd;
+            border-color: #2ecc71;
+        }
+
+        .btn-voltar, .btn-limpar {
+            padding: 10px 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #fff;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background-color: var(--header-color);
+        }
+        .btn-voltar:hover { background-color: #3498db; }
+        .btn-limpar {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--blocked-bg);
+        }
+        .btn-limpar:hover { background-color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <button class="btn-voltar" onclick="window.location.href='index.html'">&larr; Voltar</button>
+    
+    <div class="main-container">
+        <aside id="disciplinas-disponiveis">
+            <h2>Disciplinas e Turmas</h2>
+            <div id="lista-disciplinas"></div>
+        </aside>
+
+        <main id="grade-horaria-container">
+            <div class="grade-header">
+                <h2>Arraste as turmas para montar sua grade</h2>
+                <button id="btn-limpar" class="btn-limpar">Limpar Grade</button>
+            </div>
+            <div id="horario-semanal"></div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const turmas = [
+                // 1º Período (Noturno)
+                { id: 'FIL110_DEFIL', codigo: 'FIL110', nome: 'Filosofia Geral', professor: 'Défil', aulas: [{ dia: 1, horario: '19:00' }, { dia: 2, horario: '19:00' }] },
+                { id: 'DIR111_NATALIA', codigo: 'DIR111', nome: 'Civil I - Parte Geral', professor: 'Natália Lisboa', aulas: [{ dia: 3, horario: '19:00' }, { dia: 4, horario: '19:00' }] },
+                { id: 'CSO113_DECIO', codigo: 'CSO113', nome: 'Introdução à Sociologia', professor: 'Décio', aulas: [{ dia: 5, horario: '19:00' }] },
+                { id: 'DIR103_BRUNO_1', codigo: 'DIR103', nome: 'Ciência Política', professor: 'Bruno Camilloto', aulas: [{ dia: 1, horario: '21:00' }, { dia: 2, horario: '21:00' }] },
+                { id: 'DIR101_JULIO_1', codigo: 'DIR101', nome: 'IED I', professor: 'Júlio Aguiar', aulas: [{ dia: 3, horario: '21:00' }, { dia: 4, horario: '21:00' }] },
+                { id: 'PRO120_DEPRO', codigo: 'PRO120', nome: 'Economia', professor: 'Depro', aulas: [{ dia: 5, horario: '21:00' }] },
+
+                // 2º Período (Matutino)
+                { id: 'DIR123_BRUNO_2', codigo: 'DIR123', nome: 'Direitos Humanos', professor: 'Bruno Camilloto', aulas: [{ dia: 1, horario: '08:20' }] },
+                { id: 'DIR121_TATIANA', codigo: 'DIR121', nome: 'Constituição', professor: 'Tatiana Ribeiro', aulas: [{ dia: 2, horario: '08:20' }, { dia: 3, horario: '08:20' }] },
+                { id: 'DIR102_JULIO_2', codigo: 'DIR102', nome: 'Direito Civil II - Parte Geral', professor: 'Júlio Aguiar', aulas: [{ dia: 4, horario: '08:20' }, { dia: 5, horario: '08:20' }] },
+                { id: 'DIR104_BRUNO_2', codigo: 'DIR104', nome: 'Filosofia do Direito', professor: 'Bruno Camilloto', aulas: [{ dia: 1, horario: '10:20' }] },
+                { id: 'DIR105_GIULIANO_2', codigo: 'DIR105', nome: 'Sociologia Jurídica', professor: 'Giuliano Fernandes', aulas: [{ dia: 2, horario: '10:20' }] },
+                { id: 'DIR102_BEATRIZ_2', codigo: 'DIR102', nome: 'Direito Civil II - Parte Geral', professor: 'Beatriz Schettini', aulas: [{ dia: 4, horario: '10:20' }, { dia: 5, horario: '10:20' }] },
+
+                // 3º Período
+                { id: 'DIR005_HELENA_3', codigo: 'DIR005', nome: 'Ética Profissional e OAB', professor: 'Helena Freitas', aulas: [{ dia: 5, horario: '17:10' }] },
+                { id: 'DIR113_ARNAUD_3', codigo: 'DIR113', nome: 'Civil - Obrigações I', professor: 'Arnaud Belloir', aulas: [{ dia: 1, horario: '19:00' }, { dia: 2, horario: '21:00' }] },
+                { id: 'DIR031_EDVALDO_3', codigo: 'DIR031', nome: 'Direito Penal I', professor: 'Edvaldo Pereira', aulas: [{ dia: 2, horario: '19:00' }, { dia: 4, horario: '21:00' }] },
+                { id: 'DIR006_PEDRO_3', codigo: 'DIR006', nome: 'Direito do Consumidor', professor: 'Pedro Urashima', aulas: [{ dia: 3, horario: '19:00' }] },
+                { id: 'DIR004_FABIANO_3', codigo: 'DIR004', nome: 'TGP', professor: 'Fabiano Guzzo', aulas: [{ dia: 4, horario: '19:00' }, { dia: 1, horario: '21:00' }] },
+                { id: 'DIR122_GIULIANO_3', codigo: 'DIR122', nome: 'Direito Constitucional I', professor: 'Giuliano Fernandes', aulas: [{ dia: 3, horario: '21:00' }, { dia: 5, horario: '21:00' }] },
+
+                // 4º Período
+                { id: 'DIR107_CLAUDIO_4', codigo: 'DIR107', nome: 'Teoria Geral e Prop. Industrial', professor: 'Cláudio Ribeiro', aulas: [{ dia: 1, horario: '08:20' }, { dia: 2, horario: '08:20' }] },
+                { id: 'DIR032_ANDRE_4', codigo: 'DIR032', nome: 'Direito Penal II', professor: 'André de Abreu', aulas: [{ dia: 3, horario: '08:20' }, { dia: 1, horario: '10:20' }] },
+                { id: 'DIR014_BEATRIZ_4', codigo: 'DIR014', nome: 'Civil - Obrigações II', professor: 'Beatriz Schettini', aulas: [{ dia: 4, horario: '08:20' }, { dia: 5, horario: '08:20' }] },
+                { id: 'DIR023_TATIANA_4', codigo: 'DIR023', nome: 'Direito Constitucional II', professor: 'Tatiana Ribeiro', aulas: [{ dia: 2, horario: '10:20' }, { dia: 3, horario: '10:20' }] },
+                { id: 'DIR256_LEONARDO_4', codigo: 'DIR256', nome: 'Processual Civil I', professor: 'Leonardo Nunes', aulas: [{ dia: 4, horario: '10:20' }, { dia: 5, horario: '10:20' }] },
+
+                // 5º Período
+                { id: 'DIR127_FEDERICO_5', codigo: 'DIR127', nome: 'Direito Administrativo I', professor: 'Frederico Nunes', aulas: [{ dia: 1, horario: '19:00' }, { dia: 2, horario: '21:00' }] },
+                { id: 'DIR115_ARNAUD_5', codigo: 'DIR115', nome: 'Contratos I', professor: 'Arnaud Belloir', aulas: [{ dia: 2, horario: '19:00' }, { dia: 1, horario: '21:00' }] },
+                { id: 'DIR033_EDVALDO_5', codigo: 'DIR033', nome: 'Penal III', professor: 'Edvaldo Pereira', aulas: [{ dia: 3, horario: '19:00' }, { dia: 4, horario: '19:00' }] },
+                { id: 'DIR108_ROBERTO_5', codigo: 'DIR108', nome: 'Empresarial II', professor: 'Roberto Porto', aulas: [{ dia: 5, horario: '19:00' }, { dia: 4, horario: '21:00' }] },
+                { id: 'DIR257_HELENA_5', codigo: 'DIR257', nome: 'Processual Civil II', professor: 'Helena Freitas', aulas: [{ dia: 3, horario: '21:00' }, { dia: 5, horario: '21:00' }] },
+                
+                // 6º Período
+                { id: 'DIR034_ANDRE_6', codigo: 'DIR034', nome: 'Direito Penal IV', professor: 'André de Abreu', aulas: [{ dia: 1, horario: '08:20' }, { dia: 3, horario: '10:20' }] },
+                { id: 'DIR128_FEDERICO_6', codigo: 'DIR128', nome: 'Administrativo II', professor: 'Frederico Nunes', aulas: [{ dia: 2, horario: '08:20' }, { dia: 1, horario: '10:20' }] },
+                { id: 'DIR116_CLAUDIO_6', codigo: 'DIR116', nome: 'Empresarial III', professor: 'Cláudio Ribeiro', aulas: [{ dia: 3, horario: '08:20' }, { dia: 2, horario: '10:20' }] },
+                { id: 'DIR258_LEONARDO_6', codigo: 'DIR258', nome: 'Processual Civil III', professor: 'Leonardo Nunes', aulas: [{ dia: 4, horario: '08:20' }, { dia: 5, horario: '08:20' }] },
+                { id: 'DIR117_NATALIA_6', codigo: 'DIR117', nome: 'Civil - Posse e Propriedade', professor: 'Natália Lisboa', aulas: [{ dia: 4, horario: '10:20' }, { dia: 5, horario: '10:20' }] },
+
+                // 7º Período
+                { id: 'DIR119_RENATA_7', codigo: 'DIR119', nome: 'Direitos Reais Limitados', professor: 'Renata Barbosa', aulas: [{ dia: 1, horario: '19:00' }] },
+                { id: 'DIR129_FEDERICO_7', codigo: 'DIR129', nome: 'Administrativo III', professor: 'Frederico Nunes', aulas: [{ dia: 2, horario: '19:00' }, { dia: 1, horario: '21:00' }] },
+                { id: 'DIR174_AMAURI_7', codigo: 'DIR174', nome: 'Direito do Trabalho I', professor: 'Amauri Cesar', aulas: [{ dia: 3, horario: '19:00' }, { dia: 4, horario: '21:00' }] },
+                { id: 'DIR130_ROBERTO_7', codigo: 'DIR130', nome: 'Recuperação e Falência', professor: 'Roberto Porto', aulas: [{ dia: 4, horario: '19:00' }, { dia: 5, horario: '21:00' }] },
+                { id: 'DIR165_LUIZ_7', codigo: 'DIR165', nome: 'Processual Penal I', professor: 'Luiz Henrique da Costa', aulas: [{ dia: 2, horario: '21:00' }, { dia: 3, horario: '21:00' }] },
+                
+                // 8º Período
+                { id: 'DIR175_AMAURI_8', codigo: 'DIR175', nome: 'Trabalho II', professor: 'Amauri Cesar', aulas: [{ dia: 3, horario: '08:20' }, { dia: 4, horario: '08:20' }] },
+                { id: 'DIR538_JOSE_8', codigo: 'DIR538', nome: 'Internacional Público', professor: 'José Luiz Albuquerque', aulas: [{ dia: 1, horario: '10:20' }, { dia: 2, horario: '10:20' }] },
+                { id: 'DIR137_IARA_8', codigo: 'DIR137', nome: 'Civil - Famílias', professor: 'Iara Antunes', aulas: [{ dia: 3, horario: '10:20' }, { dia: 4, horario: '10:20' }] },
+                
+                // 9º Período
+                { id: 'DIR258_FABIANO_9', codigo: 'DIR258', nome: 'Processual Civil III', professor: 'Fabiano Guzzo', aulas: [{ dia: 1, horario: '19:00' }, { dia: 4, horario: '21:00' }] },
+                { id: 'DIR167_LUIZ_9', codigo: 'DIR167', nome: 'Direito Penal III', professor: 'Luiz Henrique da Costa', aulas: [{ dia: 2, horario: '19:00' }, { dia: 3, horario: '19:00' }] },
+                { id: 'DIR141_IARA_9', codigo: 'DIR141', nome: 'Civil - Sucessões', professor: 'Iara Antunes', aulas: [{ dia: 4, horario: '19:00' }, { dia: 3, horario: '21:00' }] },
+                { id: 'DIR153_FLAVIA_9', codigo: 'DIR153', nome: 'Processual do Trabalho', professor: 'Flávia Máximo', aulas: [{ dia: 1, horario: '21:00' }, { dia: 2, horario: '21:00' }] },
+
+                // 10º Período
+                { id: 'DIR154_FLAVIA_10', codigo: 'DIR154', nome: 'Direito Previdenciário', professor: 'Flávia Máximo', aulas: [{ dia: 1, horario: '08:20' }, { dia: 2, horario: '10:20' }] },
+                { id: 'DIR172_JOSE_10', codigo: 'DIR172', nome: 'Internacional Privado', professor: 'José Luiz Albuquerque', aulas: [{ dia: 2, horario: '08:20' }] },
+                { id: 'DEONTOLOGIA_HELENA_10', codigo: 'DEON', nome: 'Deontologia', professor: 'Helena Freitas', aulas: [{ dia: 1, horario: '10:20' }] },
+
+                // --- NOVAS MATÉRIAS ADICIONADAS ---
+                { id: 'DIR135_SAB08', codigo: 'DIR135', nome: 'História no Direito', professor: 'A Definir', aulas: [{ dia: 6, horario: '08:20' }] },
+                { id: 'DIR106_SEX19', codigo: 'DIR106', nome: 'Mediação e Formas Consensuais', professor: 'A Definir', aulas: [{ dia: 5, horario: '19:00' }] },
+                { id: 'DIR136_SEX19', codigo: 'DIR136', nome: 'Prática Simulada I', professor: 'A Definir', aulas: [{ dia: 5, horario: '19:00' }] },
+                { id: 'DIR166_SEGSEX08', codigo: 'DIR166', nome: 'Processual Penal II', professor: 'A Definir', aulas: [{ dia: 1, horario: '08:20' }, { dia: 5, horario: '08:20' }] },
+                { id: 'DIR109_SEX10', codigo: 'DIR109', nome: 'Elaboração de TCC', professor: 'A Definir', aulas: [{ dia: 5, horario: '10:20' }] },
+                { id: 'DIR140_TER08', codigo: 'DIR140', nome: 'Estágio Interno I', professor: 'A Definir', aulas: [{ dia: 2, horario: '08:20' }] }
+            ];
+            
+            const listaDisciplinasContainer = document.getElementById('lista-disciplinas');
+            const gradeContainer = document.getElementById('horario-semanal');
+            const btnLimpar = document.getElementById('btn-limpar');
+
+            const statusSalvos = JSON.parse(sessionStorage.getItem('gradeStatus')) || {};
+
+            function inicializar() {
+                listaDisciplinasContainer.innerHTML = '';
+                turmas.forEach(turma => {
+                    const div = document.createElement('div');
+                    div.className = 'disciplina-box';
+                    div.draggable = true;
+                    div.dataset.id = turma.id;
+                    div.innerHTML = `<strong>${turma.codigo} - ${turma.nome}</strong><small>Prof(a). ${turma.professor}</small>`;
+
+                    const status = statusSalvos[turma.codigo];
+                    if (status) {
+                        div.classList.add(`status-${status}`);
+                        if (status === 'bloqueada') {
+                            div.draggable = false;
+                        }
+                    }
+
+                    listaDisciplinasContainer.appendChild(div);
+                });
+
+                gradeContainer.innerHTML = '';
+                const dias = ['', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+                dias.forEach(dia => {
+                    const header = document.createElement('div');
+                    header.className = 'horario-header';
+                    header.textContent = dia;
+                    gradeContainer.appendChild(header);
+                });
+
+                const horariosSlots = ["08:20", "10:20", "17:10", "19:00", "21:00"];
+                const horariosLabels = ["08:20-10:10", "10:20-12:10", "17:10-19:00", "19:00-20:50", "21:00-22:50"];
+                for (let i = 0; i < horariosSlots.length; i++) {
+                    const horaLabel = document.createElement('div');
+                    horaLabel.className = 'horario-header-hora';
+                    horaLabel.textContent = horariosLabels[i];
+                    gradeContainer.appendChild(horaLabel);
+                    for (let j = 1; j <= 6; j++) { // Alterado para 6 para incluir Sábado
+                        const cell = document.createElement('div');
+                        cell.className = 'horario-celula';
+                        cell.dataset.dia = j;
+                        cell.dataset.horario = horariosSlots[i];
+                        gradeContainer.appendChild(cell);
+                    }
+                }
+            }
+            
+            listaDisciplinasContainer.addEventListener('dragstart', e => {
+                const target = e.target.closest('.disciplina-box');
+                if (target && !target.classList.contains('alocada') && target.draggable) {
+                    target.classList.add('arrastando');
+                    e.dataTransfer.setData('text/plain', target.dataset.id);
+                } else {
+                    e.preventDefault();
+                }
+            });
+
+            listaDisciplinasContainer.addEventListener('dragend', e => {
+                 const target = e.target.closest('.disciplina-box');
+                 if(target) target.classList.remove('arrastando');
+            });
+
+            gradeContainer.addEventListener('dragover', e => {
+                e.preventDefault();
+                const targetCell = e.target.closest('.horario-celula');
+                if (targetCell && !targetCell.hasChildNodes()) {
+                    removerClassesDragOver();
+                    targetCell.classList.add('drag-over');
+                }
+            });
+
+            gradeContainer.addEventListener('dragleave', () => removerClassesDragOver());
+            
+            function removerClassesDragOver() {
+                document.querySelectorAll('.drag-over').forEach(c => c.classList.remove('drag-over'));
+            }
+
+            gradeContainer.addEventListener('drop', e => {
+                e.preventDefault();
+                removerClassesDragOver();
+                const turmaId = e.dataTransfer.getData('text/plain');
+                if (!turmaId) return;
+
+                const turma = turmas.find(t => t.id === turmaId);
+                const originalBox = document.querySelector(`.disciplina-box[data-id="${turmaId}"]`);
+
+                if (!turma || originalBox.classList.contains('alocada')) return;
+                
+                for (const aula of turma.aulas) {
+                    const celula = gradeContainer.querySelector(`.horario-celula[data-dia='${aula.dia}'][data-horario='${aula.horario}']`);
+                    if (!celula || celula.hasChildNodes()) {
+                        alert('Conflito de horário ou dia inválido! Esta célula já está ocupada ou não existe.');
+                        return;
+                    }
+                }
+                
+                turma.aulas.forEach(aula => {
+                    const celula = gradeContainer.querySelector(`.horario-celula[data-dia='${aula.dia}'][data-horario='${aula.horario}']`);
+                    const clone = originalBox.cloneNode(true);
+                    clone.classList.remove('arrastando');
+                    clone.draggable = false;
+                    celula.appendChild(clone);
+                });
+
+                originalBox.classList.add('alocada');
+            });
+
+            function removerTurma(turmaId) {
+                const originalBox = document.querySelector(`#disciplinas-disponiveis .disciplina-box[data-id="${turmaId}"]`);
+                if (originalBox) {
+                    originalBox.classList.remove('alocada');
+                }
+
+                const clonesNaGrade = document.querySelectorAll(`#horario-semanal .disciplina-box[data-id="${turmaId}"]`);
+                clonesNaGrade.forEach(clone => clone.remove());
+            }
+
+            gradeContainer.addEventListener('click', e => {
+                const boxClicada = e.target.closest('.disciplina-box');
+                if (boxClicada) {
+                    removerTurma(boxClicada.dataset.id);
+                }
+            });
+
+            btnLimpar.addEventListener('click', () => {
+                const celulas = gradeContainer.querySelectorAll('.horario-celula');
+                celulas.forEach(c => c.innerHTML = '');
+
+                const boxesAlocadas = listaDisciplinasContainer.querySelectorAll('.disciplina-box.alocada');
+                boxesAlocadas.forEach(b => b.classList.remove('alocada'));
+            });
+
+            inicializar();
+        });
+    </script>
+</body>
+</html>
