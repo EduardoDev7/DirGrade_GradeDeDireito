@@ -190,6 +190,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const turmas = [
                 // 1º Período (Noturno)
+                { id: 'DIR135_SAB08', codigo: 'DIR135', nome: 'História no Direito', professor: 'André', aulas: [{ dia: 6, horario: '08:20' }] },
                 { id: 'FIL110_DEFIL', codigo: 'FIL110', nome: 'Filosofia Geral', professor: 'Défil', aulas: [{ dia: 1, horario: '19:00' }, { dia: 2, horario: '19:00' }] },
                 { id: 'DIR111_NATALIA', codigo: 'DIR111', nome: 'Civil I - Parte Geral', professor: 'Natália Lisboa', aulas: [{ dia: 3, horario: '19:00' }, { dia: 4, horario: '19:00' }] },
                 { id: 'CSO113_DECIO', codigo: 'CSO113', nome: 'Introdução à Sociologia', professor: 'Décio', aulas: [{ dia: 5, horario: '19:00' }] },
@@ -209,6 +210,7 @@
                 { id: 'DIR005_HELENA_3', codigo: 'DIR005', nome: 'Ética Profissional e OAB', professor: 'Helena Freitas', aulas: [{ dia: 5, horario: '17:10' }] },
                 { id: 'DIR113_ARNAUD_3', codigo: 'DIR113', nome: 'Civil - Obrigações I', professor: 'Arnaud Belloir', aulas: [{ dia: 1, horario: '19:00' }, { dia: 2, horario: '21:00' }] },
                 { id: 'DIR031_EDVALDO_3', codigo: 'DIR031', nome: 'Direito Penal I', professor: 'Edvaldo Pereira', aulas: [{ dia: 2, horario: '19:00' }, { dia: 4, horario: '21:00' }] },
+                { id: 'DIR106_SEX19', codigo: 'DIR106', nome: 'Mediação e Formas Consensuais', professor: 'A Definir', aulas: [{ dia: 5, horario: '19:00' }] },
                 { id: 'DIR006_PEDRO_3', codigo: 'DIR006', nome: 'Direito do Consumidor', professor: 'Pedro Urashima', aulas: [{ dia: 3, horario: '19:00' }] },
                 { id: 'DIR004_FABIANO_3', codigo: 'DIR004', nome: 'TGP', professor: 'Fabiano Guzzo', aulas: [{ dia: 4, horario: '19:00' }, { dia: 1, horario: '21:00' }] },
                 { id: 'DIR122_GIULIANO_3', codigo: 'DIR122', nome: 'Direito Constitucional I', professor: 'Giuliano Fernandes', aulas: [{ dia: 3, horario: '21:00' }, { dia: 5, horario: '21:00' }] },
@@ -236,6 +238,7 @@
 
                 // 7º Período
                 { id: 'DIR119_RENATA_7', codigo: 'DIR119', nome: 'Direitos Reais Limitados', professor: 'Renata Barbosa', aulas: [{ dia: 1, horario: '19:00' }] },
+                { id: 'DIR136_SEX19', codigo: 'DIR136', nome: 'Prática Simulada I', professor: 'A Definir', aulas: [{ dia: 5, horario: '19:00' }] },
                 { id: 'DIR129_FEDERICO_7', codigo: 'DIR129', nome: 'Administrativo III', professor: 'Frederico Nunes', aulas: [{ dia: 2, horario: '19:00' }, { dia: 1, horario: '21:00' }] },
                 { id: 'DIR174_AMAURI_7', codigo: 'DIR174', nome: 'Direito do Trabalho I', professor: 'Amauri Cesar', aulas: [{ dia: 3, horario: '19:00' }, { dia: 4, horario: '21:00' }] },
                 { id: 'DIR130_ROBERTO_7', codigo: 'DIR130', nome: 'Recuperação e Falência', professor: 'Roberto Porto', aulas: [{ dia: 4, horario: '19:00' }, { dia: 5, horario: '21:00' }] },
@@ -243,8 +246,11 @@
                 
                 // 8º Período
                 { id: 'DIR175_AMAURI_8', codigo: 'DIR175', nome: 'Trabalho II', professor: 'Amauri Cesar', aulas: [{ dia: 3, horario: '08:20' }, { dia: 4, horario: '08:20' }] },
+                { id: 'DIR166_SEGSEX08', codigo: 'DIR166', nome: 'Processual Penal II', professor: 'A', aulas: [{ dia: 1, horario: '08:20' }, { dia: 5, horario: '08:20' }] },
                 { id: 'DIR538_JOSE_8', codigo: 'DIR538', nome: 'Internacional Público', professor: 'José Luiz Albuquerque', aulas: [{ dia: 1, horario: '10:20' }, { dia: 2, horario: '10:20' }] },
                 { id: 'DIR137_IARA_8', codigo: 'DIR137', nome: 'Civil - Famílias', professor: 'Iara Antunes', aulas: [{ dia: 3, horario: '10:20' }, { dia: 4, horario: '10:20' }] },
+                { id: 'DIR109_SEX10', codigo: 'DIR109', nome: 'Elaboração de TCC', professor: 'A Definir', aulas: [{ dia: 5, horario: '10:20' }] },
+                { id: 'DIR140_TER08', codigo: 'DIR140', nome: 'Estágio Interno I', professor: 'A Definir', aulas: [{ dia: 2, horario: '08:20' }] },
                 
                 // 9º Período
                 { id: 'DIR258_FABIANO_9', codigo: 'DIR258', nome: 'Processual Civil III', professor: 'Fabiano Guzzo', aulas: [{ dia: 1, horario: '19:00' }, { dia: 4, horario: '21:00' }] },
@@ -258,12 +264,8 @@
                 { id: 'DEONTOLOGIA_HELENA_10', codigo: 'DEON', nome: 'Deontologia', professor: 'Helena Freitas', aulas: [{ dia: 1, horario: '10:20' }] },
 
                 // --- NOVAS MATÉRIAS ADICIONADAS ---
-                { id: 'DIR135_SAB08', codigo: 'DIR135', nome: 'História no Direito', professor: 'A Definir', aulas: [{ dia: 6, horario: '08:20' }] },
-                { id: 'DIR106_SEX19', codigo: 'DIR106', nome: 'Mediação e Formas Consensuais', professor: 'A Definir', aulas: [{ dia: 5, horario: '19:00' }] },
-                { id: 'DIR136_SEX19', codigo: 'DIR136', nome: 'Prática Simulada I', professor: 'A Definir', aulas: [{ dia: 5, horario: '19:00' }] },
-                { id: 'DIR166_SEGSEX08', codigo: 'DIR166', nome: 'Processual Penal II', professor: 'A Definir', aulas: [{ dia: 1, horario: '08:20' }, { dia: 5, horario: '08:20' }] },
-                { id: 'DIR109_SEX10', codigo: 'DIR109', nome: 'Elaboração de TCC', professor: 'A Definir', aulas: [{ dia: 5, horario: '10:20' }] },
-                { id: 'DIR140_TER08', codigo: 'DIR140', nome: 'Estágio Interno I', professor: 'A Definir', aulas: [{ dia: 2, horario: '08:20' }] }
+                
+                
             ];
             
             const listaDisciplinasContainer = document.getElementById('lista-disciplinas');
